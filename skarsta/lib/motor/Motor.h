@@ -6,7 +6,7 @@
 #ifdef __USENSOR__
 #include <HCSR04.h>
 #else
-#include <Rotary.h>
+#include <Encoder.h>
 #endif
 
 typedef enum {
@@ -16,9 +16,9 @@ typedef enum {
 } MotorState;
 
 typedef enum {
-    UNCALIBRATED,   // nothing calibrated
-    SEMICALIBRATED, // bottom calibrated
-    CALIBRATED      // bottom-top calibrated
+    UNCALIBRATED   = 0, // nothing calibrated
+    SEMICALIBRATED = 1, // bottom calibrated
+    CALIBRATED     = 2  // bottom-top calibrated
 } MotorMode;
 
 #ifdef __EEPROM__
@@ -31,7 +31,7 @@ typedef enum {
 class Motor : public TimedService {
 private:
 #ifndef __USENSOR__
-    Rotary sensor;
+    Encoder sensor;
 #else
     UltraSonicDistanceSensor sensor;
 #endif
@@ -44,15 +44,12 @@ private:
 
     MotorState state = OFF;
     MotorMode mode = UNCALIBRATED;
-    volatile unsigned int position = 0u, position_change = 0u;
+    // For Encoder: position in the position from the encoder
+    volatile uint32_t position = 0u, position_change = 0u;
 
 protected:
     bool reverse = false;
-
-#ifndef __USENSOR__
-    void update_position(unsigned char result);
-#endif
-
+    bool encoder_inline = false;
     void initPin(uint8_t pin, uint8_t val = LOW);
 
     bool check_end_stops(const unsigned int end_stop_down, const unsigned int end_stop_up) const;
@@ -64,7 +61,7 @@ protected:
     virtual void _dir_ccw() = 0;
 
 public:
-    Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change, bool reverse);
+    Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change, bool reverse, bool encoder_inline);
 
     bool begin() override;
 
@@ -76,13 +73,13 @@ public:
 
     void set_end_stop(unsigned int end_stop, unsigned int offset = 0);
 
-    unsigned int get_position() const;
+    uint32_t get_position() const;
 
-    unsigned int get_position_change();
+    uint32_t get_position_change();
 
     void reset_position();
 
-    void set_position(unsigned int pos);
+    void set_position(uint32_t pos);
 
     MotorState get_state() const;
 

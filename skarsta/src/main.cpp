@@ -5,13 +5,11 @@
 #include <Keypad.h>
 #include <configuration.h>
 #include <Watchdog.h>
-
 #ifdef __H_BRIDGE_MOTOR__
 #include <MotorBridge.h>
 #else
 #include <MotorRelay.h>
 #endif
-
 #ifdef __EEPROM__
 
 bool eeprom_valid() {
@@ -33,12 +31,12 @@ void eeprom_reset() {
 
 #ifdef __H_BRIDGE_MOTOR__
 MotorBridge motor(SENSOR_PIN0, SENSOR_PIN1, R_EN, L_EN, R_PWM, L_PWM, STOP_POS_DIFF, MINIMUM_POS_CHANGE,
-                  REVERSE_POLARITY);
+                  REVERSE_POLARITY, ENCODER_INLINE);
 #else
 MotorRelay motor(SENSOR_PIN0, SENSOR_PIN1, POWER_RELAY, DIRECTION_RELAY, STOP_POS_DIFF, MINIMUM_POS_CHANGE,
-                 REVERSE_POLARITY);
+                 REVERSE_POLARITY, ENCODER_INLINE);
 #endif
-Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
+NoDisplay display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
 Watchdog watchdog(&motor, WATCHDOG_TIMEOUT, WATCHDOG_DEADLOCK_CHANGE, WATCHDOG_OTHER_CHANGE, WATCHDOG_OTHER_SLEEP);
 Calibrator calibrator(&motor);
 Keypad keypad(&motor, &display, &calibrator, BUTTON_DOWN, BUTTON_UP, BUTTON_RST, BUTTON_P0, BUTTON_P1, BUTTON_P2);
@@ -50,6 +48,7 @@ SafetyTrigger runawayTrigger(&motor, &display, STARTED, WATCHDOG_TOLERANCE);
 #endif
 
 void setup() {
+    
     LOG_INIT(Serial.begin(9600), &Serial);
     LOG("starting");
 #ifdef __EEPROM__

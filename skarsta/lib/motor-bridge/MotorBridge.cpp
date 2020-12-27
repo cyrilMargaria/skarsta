@@ -53,6 +53,6 @@ void MotorBridge::cycle() {
         setSpeed(get_state(), speed + 5 % (MAX_SPEED + 1));
         elapsed = 0;
     }
-
+    
     Motor::cycle();
 }

@@ -10,14 +10,14 @@ bool SafetyTrigger::trip(ErrorType t) {
         LOG("t | t:%d ec:%d", type, error_count);
         return false;
     }
-
-    motor->disable();
-    display->disable(t);
+    
+    //motor->disable();
+    //display->disable(t);
     return true;
 }
 
 void SafetyTrigger::reset() {
-    LOG("t | reset");
+    //LOG("t | reset");
     error_count = 0;
 }
 
@@ -41,8 +41,8 @@ void Watchdog::cycle() {
             lastRotation = 0;
         }
 
-        LOG("w | d:%d s:%d", pos_diff, state);
         if (pos_diff <= deadlock_change && state != OFF) {
+            LOG("w | d:%d s:%d", pos_diff, state);
             for (auto trigger: triggers)
                 if (trigger->trip(STOPPED))
                     break;

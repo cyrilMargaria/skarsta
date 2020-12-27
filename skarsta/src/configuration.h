@@ -2,15 +2,15 @@
 
 #define SENSOR_PIN0 2
 #define SENSOR_PIN1 3
-
 #define DISPLAY_PIN_CLK     4
 #define DISPLAY_PIN_DIO     5
 #define FADE_TIMEOUT        60000
 
-#define BUTTON_DOWN     A0 // -> 14
-#define BUTTON_UP       A1 // -> 15
+#define BUTTON_DOWN     A1 // -> 14
+#define BUTTON_UP       A0 // -> 15
 #define BUTTON_P0       A2 // -> 16
 #define BUTTON_P1       A3 // -> 17
+// Not working (cable)
 #define BUTTON_P2       A4 // -> 18
 #define BUTTON_RST      A5 // -> 19
 
@@ -31,7 +31,7 @@
 #else
     #define WATCHDOG_TIMEOUT        100
 #endif
-#define WATCHDOG_DEADLOCK_CHANGE    6
+#define WATCHDOG_DEADLOCK_CHANGE    12
 #define WATCHDOG_OTHER_CHANGE       6
 #ifndef WATCHDOG_OTHER_SLEEP
     #define WATCHDOG_OTHER_SLEEP    0
@@ -53,3 +53,6 @@
 #define REVERSE_POLARITY   false
 #define DIRECTION_RELAY     6
 #define POWER_RELAY         7
+// When the rotary sensor is not in the case but directly on the shaft, the counting direction is reversed
+// this configure the behavior
+#define ENCODER_INLINE      true    

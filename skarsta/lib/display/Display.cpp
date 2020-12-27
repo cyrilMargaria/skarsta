@@ -135,3 +135,79 @@ void Display::disable(uint8_t cause) {
     print(error_msg);
     disabled = true;
 }
+
+
+
+NoDisplay::NoDisplay(uint8_t _pin1, uint8_t _pin2, uint16_t _timeout) : Display(_pin1,  _pin2, _timeout) {
+    
+}
+
+bool NoDisplay::begin() {  
+    return true;
+}
+
+void NoDisplay::set_blink(bool state) {
+   
+}
+
+void NoDisplay::print(unsigned int position) {
+    int8_t buffer[4] = {
+            get_code_n(position / 1000),
+            get_code_n((position / 100) % 10),
+            get_code_n((position % 100) / 10),
+            get_code_n(position % 10)};
+    for (uint8_t i = 0u; i < 4; i++) {
+        dirty = dirty || disp_buffer[i] != buffer[i];
+        disp_buffer[i] = buffer[i];
+    }
+
+    if (dirty) {
+        LOG("d | print:%d", position);
+    }
+}
+
+void NoDisplay::print(const char *text) {
+    const uint8_t len = strlen(text);
+    int8_t buffer[4] = {
+            len > 0 ? get_code_c(text[0]) : 0x00,
+            len > 1 ? get_code_c(text[1]) : 0x00,
+            len > 2 ? get_code_c(text[2]) : 0x00,
+            len > 3 ? get_code_c(text[3]) : 0x00};
+    for (uint8_t i = 0u; i < 4; i++) {
+        dirty = dirty || disp_buffer[i] != buffer[i];
+        disp_buffer[i] = buffer[i];
+    }
+
+    if (dirty) {
+        LOG("d | print:%s", text);
+    }
+}
+
+void NoDisplay::set_brightness(uint8_t b) {
+ 
+    LOG("d | brightness:%d", b);
+}
+
+void NoDisplay::light_up() {
+    if (!this->blink)
+        this->dirty = true;
+}
+
+void NoDisplay::cycle() {
+    if (dirty) {       
+        dirty = false;
+        elapsed = 0;
+        LOG("d | redraw");
+    } else if (blink) {
+        if (elapsed >= 100) {
+            if (!clear) {
+            }
+            clear = !clear;
+            elapsed = 0;
+        }
+    } 
+}
+
+void NoDisplay::disable(uint8_t cause) {
+    error_msg[3] = (char) ('0' + (cause % 10));
+}

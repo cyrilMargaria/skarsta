@@ -24,9 +24,9 @@ Keypad::Keypad(Motor *_motor, Display *_display, Calibrator *_calibrator,
     keypad = this;
     auto motor_off = []() { motor->off(); };
     // up/down
-    down.on_press([]() { if (!keypad->stop_motor()) motor->dir_ccw(); });
+    down.on_press([]() { LOG("-DOWN"); if (!keypad->stop_motor()) motor->dir_ccw(); });
     down.on_release(motor_off);
-    up.on_press([]() { if (!keypad->stop_motor()) motor->dir_cw(); });
+    up.on_press([]() { LOG("-UP"); if (!keypad->stop_motor()) motor->dir_cw(); });
     up.on_release(motor_off);
     // display light-up callback
     auto light_up = []() { display->light_up(); };
@@ -37,7 +37,7 @@ Keypad::Keypad(Motor *_motor, Display *_display, Calibrator *_calibrator,
     // calibration
     rst.long_press(RST_BUTTON_TIMEOUT);
     rst.on_short_press([]() { keypad->stop_motor(); });
-    rst.on_long_press([]() { calibrator->calibrate(); });
+    rst.on_long_press([]() { LOG("-CALIBRATE"); calibrator->calibrate(); });
 #ifdef __EXPERIMENTAL__
     rst.on_llong_press([]() { calibrator->auto_calibrate(); });
 #endif
@@ -58,12 +58,14 @@ void Keypad::cycle() {
     if (rst.held()) {
         display->set_blink(false);
         display->print("-rst");
+        LOG("-RST");
         return;
     }
     for (auto &preset_button : preset_buttons) {
         if (preset_button->held() && motor->get_mode() == CALIBRATED) {
-            display->set_blink(false);
+            display->set_blink(false);            
             display->print("-set");
+            LOG("-preset-set");
             return;
         }
     }
@@ -90,6 +92,7 @@ void Keypad::goto_preset(uint8_t i, unsigned int pos) {
 }
 
 bool Keypad::stop_motor() {
+    LOG("-STOP");
     if (motor->get_state() == OFF)
         return false;
     motor->off();
