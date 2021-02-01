@@ -2,13 +2,16 @@
 
 #include <Arduino.h>
 #include <Service.h>
-#include <TM1637.h>
-
+#include <ErriezTM1637.h>
+#define TM1637_MAX_BUTTON 16
+#define BRIGHT_HIGH 8
 class Display : public TimedService {
 protected:
     TM1637 display;
     uint8_t brightness = BRIGHT_HIGH;
-    int8_t disp_buffer[4] = {0x00, 0x00, 0x00, 0x00};
+    uint8_t disp_buffer[4] = {0x00, 0x00, 0x00, 0x00};
+    // proxy TM1637 buttons
+    bool display_button_pressed[TM1637_MAX_BUTTON];
     bool dirty = false, blink = false, clear = false, disabled = false;
 
     const uint16_t timeout;
@@ -29,8 +32,12 @@ public:
     virtual void print(const char *text);
 
     void cycle() override;
+    void button_cycle();
 
     void disable(uint8_t cause) override;
+
+    bool is_button_pressed(uint8_t i) { return (i < TM1637_MAX_BUTTON) ?  display_button_pressed[i]: false;}
+   
 };
 
 class NoDisplay: public Display {
@@ -50,6 +57,8 @@ class NoDisplay: public Display {
     void print(const char *text) override;
 
     void cycle() override;
+
+    void button_cycle();
 
     void disable(uint8_t cause) override;
 };

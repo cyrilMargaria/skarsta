@@ -8,7 +8,7 @@ static int8_t get_code_n(uint8_t n) {
     return n > 9 ? 0x00 : codes_numbers[n];
 }
 
-static int8_t get_code_c(char c) {
+static uint8_t get_code_c(char c) {
     if (c >= '0' && c <= '9') {
         return get_code_n((uint8_t) (c - '0'));
     }
@@ -33,31 +33,33 @@ static int8_t get_code_c(char c) {
 
 Display::Display(uint8_t _pin1, uint8_t _pin2, uint16_t _timeout) :
         display(_pin1, _pin2), timeout(_timeout) {
-    display.set(brightness);
+    display.begin();
+    display.setBrightness(brightness);
 }
 
 bool Display::begin() {
-    display.clearDisplay();
+    display.clear();
     for (uint8_t i = 4; i > 0; i--) {
-        display.display(i - 1, get_code_n(8), true);
+        display.writeData(i - 1, get_code_n(8));
         delay(200);
     }
-    display.clearDisplay();
+    display.clear();
     return true;
 }
 
 void Display::set_blink(bool state) {
     if (disabled) return;
     if (blink != state) {
-        LOG("d | blink=%d", state);
+        LOG("d | blink=%s", state?"true":"false");
     }
     dirty = blink != state && !state;
     blink = state;
+   
 }
 
 void Display::print(unsigned int position) {
     if (disabled) return;
-    int8_t buffer[4] = {
+    uint8_t buffer[4] = {
             get_code_n(position / 1000),
             get_code_n((position / 100) % 10),
             get_code_n((position % 100) / 10),
@@ -95,28 +97,51 @@ void Display::set_brightness(uint8_t b) {
         return;
     brightness = b;
     LOG("d | brightness:%d", brightness);
-    display.set(b);
+    display.setBrightness(b);
 }
 
 void Display::light_up() {
     if (!this->blink)
         this->dirty = true;
 }
+void Display::button_cycle() {
+    uint8_t keydata = display.getKeys();
+    // at most one key can be detected
+    // clear all buttons, set the one pressed
+    uint32_t pre_change =0 ;
+    for (size_t i=0; i< TM1637_MAX_BUTTON; i++ ) {
+        if (display_button_pressed[i]) {
+            pre_change |= 1<< i;
+        }
+        display_button_pressed[i] = false;
+    }    
+    if (keydata < TM1637_MAX_BUTTON) {
+        if ((pre_change & (1<<keydata)) == 0) {
+            LOG("B | P:%d", keydata);
+        }
+        LOG("B | s:%d", keydata);
+        display_button_pressed[keydata] = true;
+    }
+    if ((pre_change != 0) && (0xFF ==keydata)) {
+        LOG("B | ~P:%d", pre_change);
+    }
+}
 
 void Display::cycle() {
+  
     if (dirty) {
         this->set_brightness(BRIGHT_HIGH);
-        display.display(disp_buffer, true);
+        display.writeData(0, disp_buffer, 4);
         dirty = false;
         elapsed = 0;
         LOG("d | redraw");
-    } else if (blink) {
+    } else if (blink && false) {
         if (elapsed >= 100) {
             if (!clear) {
-                display.clearDisplay();
+                display.clear();
             } else {
                 this->set_brightness(BRIGHT_HIGH);
-                display.display(disp_buffer, true);
+                display.writeData(0, disp_buffer, 4);
             }
             clear = !clear;
             elapsed = 0;
@@ -124,9 +149,9 @@ void Display::cycle() {
     } else if (!disabled && brightness != 0 && elapsed >= timeout) {
         this->set_brightness((uint8_t) (8 - ((elapsed - timeout) / 10000)));
         if (brightness != 0)
-            display.display(disp_buffer, true);
+            display.writeData(0, disp_buffer, 4);
         else
-            display.clearDisplay();
+            display.clear();
     }
 }
 
@@ -151,7 +176,7 @@ void NoDisplay::set_blink(bool state) {
 }
 
 void NoDisplay::print(unsigned int position) {
-    int8_t buffer[4] = {
+    uint8_t buffer[4] = {
             get_code_n(position / 1000),
             get_code_n((position / 100) % 10),
             get_code_n((position % 100) / 10),
@@ -168,7 +193,7 @@ void NoDisplay::print(unsigned int position) {
 
 void NoDisplay::print(const char *text) {
     const uint8_t len = strlen(text);
-    int8_t buffer[4] = {
+    uint8_t buffer[4] = {
             len > 0 ? get_code_c(text[0]) : 0x00,
             len > 1 ? get_code_c(text[1]) : 0x00,
             len > 2 ? get_code_c(text[2]) : 0x00,

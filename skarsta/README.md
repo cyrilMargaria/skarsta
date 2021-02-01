@@ -78,3 +78,6 @@ After testing quite a few DC motors from Ebay, Aliexpress and Banggood, I stuck 
 ### Thanks to
 
 [iLLiac4](https://github.com/iLLiac4), See his mods on [Thingiverse](https://www.thingiverse.com/thing:3227567)
+https://github.com/Erriez/ErriezTM1637 
+
+

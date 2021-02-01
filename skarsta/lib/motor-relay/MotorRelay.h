@@ -23,8 +23,8 @@ protected:
     void _dir_ccw() override;
 
 public:
- MotorRelay(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4, uint8_t stop_diff, uint8_t min_change, bool reverse, bool encoder_inline) :
-    Motor(_pin1, _pin2, stop_diff, min_change, reverse, encoder_inline), power_pin(_pin3), dir_pin(_pin4) {};
+ MotorRelay(uint8_t _pin1, uint8_t _pin2, uint8_t _pin3, uint8_t _pin4, uint8_t stop_diff, uint8_t min_change, bool reverse, bool encoder_inline, uint8_t encoder_turn_count) :
+    Motor(_pin1, _pin2, stop_diff, min_change, reverse, encoder_inline, encoder_turn_count), power_pin(_pin3), dir_pin(_pin4) {};
 
     bool begin() override;
 };

@@ -1,23 +1,24 @@
 
 push_size = 6;
+push_case_size = 12;
 margin = 0.4;
 wall_thickness = 0.8;
 $fn = 100;
 
 module insert(x) {
-translate([x*(12+wall_thickness),0,0]) difference() {
+translate([x*(push_case_size+wall_thickness),0,0]) difference() {
 union() {    
 
 color([1,0,0]) translate([0,0,3.6]) difference() {
-  cube([12,12,1.8]); 
-  translate([(12-(push_size+2*margin))/2,(12-(push_size+2*margin))/2,-1]) cube([push_size+2*margin,push_size+2*margin,6]);
+  cube([push_case_size,push_case_size,1.8]); 
+  translate([(push_case_size-(push_size+2*margin))/2,(push_case_size-(push_size+2*margin))/2,-1]) cube([push_size+2*margin,push_size+2*margin,6]);
 }
 translate([-wall_thickness,-wall_thickness,0]) difference() {
-  cube([12+2*wall_thickness,12+2*wall_thickness,10]);
-  translate([wall_thickness,wall_thickness,-1]) cube([12,12,12]);
+  cube([push_case_size+2*wall_thickness,push_case_size+2*wall_thickness,10]);
+  translate([wall_thickness,wall_thickness,-1]) cube([push_case_size,push_case_size,push_case_size]);
 }
 }
-translate([-2*wall_thickness,0,-1]) cube([12+4*wall_thickness,12+2*wall_thickness,4.6]);
+translate([-2*wall_thickness,0,-1]) cube([push_case_size+4*wall_thickness,12+2*wall_thickness,4.6]);
 }
 }
 module button_case() {
@@ -32,23 +33,52 @@ case_total_h = 10;
 case_w = 35;
 // print ratio, not for the buttons!
 p_ratio = 1.015;
-bore_d = 8*p_ratio;
+// hole depth
+bore_h = 7*p_ratio;
+bore_d = 2.5*p_ratio;
 angle = 22;
 
-module disp() {
-    // For some official one, need to check with the one I have :-(
-    bore_d = 6*p_ratio;
-    pcb_l = 66*p_ratio;
-    pcb_w = 27.5*p_ratio;
-    pcb_h = 2*p_ratio; 
-    cube([pcb_l+2*margin,pcb_w+2*margin,pcb_h]);
-    translate([margin+3*p_ratio,margin+3.05*p_ratio,0]) cylinder(h=bore_d+pcb_h, d=3*p_ratio);
-    translate([margin+pcb_l-3*p_ratio,margin+3.05*p_ratio,0]) cylinder(h=bore_d+pcb_h, d=3*p_ratio);
-    translate([margin+3*p_ratio,margin+pcb_w-3.05*p_ratio,0]) cylinder(h=bore_d+pcb_h, d=3*p_ratio);
-    translate([margin+pcb_l-3*p_ratio,margin+pcb_w-3.05*p_ratio,0]) cylinder(h=bore_d+pcb_h, d=3*p_ratio);
-   color([1,0,0]) translate([margin+6.51*p_ratio,margin+4.04*p_ratio,pcb_h]) cube([50.2*p_ratio+2*margin,19*p_ratio+2*margin,case_total_h*p_ratio-0.3-pcb_h]);
+ 
+ /*
+  Display module, used in other calculation
+  +-------------------------------+____
+  |O                             O|    4mm
+  |       +-----------------+     |____
+  |o      |                 |    o|------ CLK 
+  |o      |                 |    o|------ DIO
+  |o      |                 |    o|------ GND
+  |o      |                 |    o|------ VCC (5V)
+  |       +-----------------+     |_____
+  |O                             O|     4mm
+  +-------------------------------+_____
+  |       |                 |     |
+  | 10mm  |                 | 5mm |
+ O : 3.2mm (d) : space between centers: 40mm (Horizontal) 17.5mm (Vertical)
+ Space with edge: 1mm (center at 4.2mm from edge)
+ o : 2.51mm between pin , 7.51 from edge   
+ */
+bore_pcb_hole_d = 3.3*p_ratio;
+pcb_l = 46*p_ratio;
+pcb_w = 23*p_ratio;
+pcb_h = 2*p_ratio; 
+// distance between PCB edge and hole diameter
+bore_pcb_d = 1*p_ratio;
 
+hole_z_check = 0;
+module disp() {
+
+    bore_center = bore_pcb_d+bore_pcb_hole_d/2;
+    union() {
+    cube([pcb_l+2*margin,pcb_w+2*margin,pcb_h]);
+      translate([margin+bore_center,margin+bore_center,0]) cylinder(h=bore_h, d=bore_d);
+      translate([margin+pcb_l-bore_center,margin+bore_center,0]) cylinder(h=bore_h, d=bore_d);
+      translate([margin+bore_center,margin+pcb_w-bore_center,0]) cylinder(h=bore_h, d=bore_d);
+      translate([margin+pcb_l-bore_center,margin+pcb_w-bore_center,0]) cylinder(h=bore_h, d=bore_d);
+      color([1,0,0]) translate([margin+10*p_ratio,margin+4*p_ratio,pcb_h]) cube([30*p_ratio+2*margin,14*p_ratio+2*margin,case_total_h*p_ratio-0.3-pcb_h]);
+    }   
 }
+
+
 union() {
 difference() {
   // rounded square
@@ -68,15 +98,20 @@ difference() {
   // empty space for buttons 
   translate([67.5*p_ratio, 9*p_ratio,-2]) cube([75.5*p_ratio, 12*p_ratio, case_total_h*p_ratio+4]);
   // holes
-  hole_z_check = 1;
-  translate([8*p_ratio, 6*p_ratio,-hole_z_check]) cylinder(h=bore_d+hole_z_check, d=3*p_ratio);
-  translate([(60+8)*p_ratio, 6*p_ratio,-hole_z_check]) cylinder(h=bore_d+hole_z_check, d=3*p_ratio);
-  translate([(150-8)*p_ratio, 6*p_ratio,-hole_z_check]) cylinder(h=bore_d+hole_z_check, d=3*p_ratio);
 
-  translate([8*p_ratio, (22+6)*p_ratio,-hole_z_check]) cylinder(h=bore_d+hole_z_check, d=3*p_ratio);
-  translate([(60+8)*p_ratio, (22+6)*p_ratio,-hole_z_check]) cylinder(h=bore_d+hole_z_check, d=3*p_ratio);
-  translate([(150-8)*p_ratio, (22+6)*p_ratio,-hole_z_check]) cylinder(h=bore_d+hole_z_check, d=3*p_ratio);
+  translate([8*p_ratio, 6*p_ratio,-hole_z_check]) cylinder(h=bore_h+hole_z_check, d=bore_d);
+  translate([(60+8)*p_ratio, 6*p_ratio,-hole_z_check]) cylinder(h=bore_h+hole_z_check, d=bore_d);
+  translate([(150-8)*p_ratio, 6*p_ratio,-hole_z_check]) cylinder(h=bore_h+hole_z_check, d=bore_d);
+
+  translate([8*p_ratio, (22+6)*p_ratio,-hole_z_check]) cylinder(h=bore_h+hole_z_check, d=bore_d);
+  translate([(60+8)*p_ratio, (22+6)*p_ratio,-hole_z_check]) cylinder(h=bore_h+hole_z_check, d=bore_d);
+  translate([(150-8)*p_ratio, (22+6)*p_ratio,-hole_z_check]) cylinder(h=bore_h+hole_z_check, d=bore_d);
+  translate([11*p_ratio, 5*p_ratio,-hole_z_check]) disp();
+  // can be used for cabling
+  translate([11*p_ratio+pcb_l+2*margin, 9*p_ratio,-hole_z_check]) cube([67.5*p_ratio-(11*p_ratio+pcb_l+2*margin)+wall_thickness+margin,push_case_size,4.6]);
+   translate([80*l_ratio, case_w*p_ratio-12,case_total_h*p_ratio-0.8]) {
+    linear_extrude(3) text("SIT/STAND", font="Arial Rounded MT Bold", size=9);
+  }
 }
 translate([67.5*p_ratio, 9*p_ratio,0])button_case();
 }
-//disp();

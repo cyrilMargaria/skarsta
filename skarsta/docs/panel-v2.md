@@ -49,3 +49,9 @@
       <img src="./img/panel-v2/back.jpg"/>
     </p>
   </details>
+
+
+## Panel- use TM1637 keys
+
+TM1637 allows keys to be read, 
+

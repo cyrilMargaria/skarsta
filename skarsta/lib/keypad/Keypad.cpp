@@ -19,10 +19,9 @@ Keypad::Keypad(Motor *_motor, Display *_display, Calibrator *_calibrator,
         buttons({&preset_0, &preset_1, &preset_2, &down, &up, &rst}) {
     motor = _motor;
     display = _display;
-    calibrator = _calibrator;
-
+    calibrator = _calibrator;    
     keypad = this;
-    auto motor_off = []() { motor->off(); };
+    auto motor_off = []() { LOG("-OFF"); motor->off(); };
     // up/down
     down.on_press([]() { LOG("-DOWN"); if (!keypad->stop_motor()) motor->dir_ccw(); });
     down.on_release(motor_off);
@@ -45,13 +44,26 @@ Keypad::Keypad(Motor *_motor, Display *_display, Calibrator *_calibrator,
 }
 
 bool Keypad::begin() {
+
+    LOG(" b | begin()");    
     for (auto &button : buttons)
         if (!button->begin())
-            return false;
+            return false;    
     return true;
 }
 
 void Keypad::cycle() {
+    display->button_cycle();
+    
+    for (uint8_t i =0 ; i < 6; i++) {
+        bool state = display->is_button_pressed(buttons[i]->id());
+        if (state) {
+            buttons[i]->press();
+        } else {
+            buttons[i]->unpress();
+        }        
+    }
+    
     for (auto &button : buttons)
         button->cycle();
 

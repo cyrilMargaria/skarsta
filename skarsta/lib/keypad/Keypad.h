@@ -16,8 +16,8 @@
 
 class Keypad : public Service {
 private:
-    NIButton down, up, rst, preset_0, preset_1, preset_2;
-    NIButton *preset_buttons[3], *buttons[6];
+    TMButton down, up, rst, preset_0, preset_1, preset_2;
+    TMButton *preset_buttons[3], *buttons[6];
 protected:
     bool stop_motor();
 

@@ -1,18 +1,19 @@
 #pragma once
 
-#define SENSOR_PIN0 2
-#define SENSOR_PIN1 3
+// 
+#define SENSOR_PIN0 2 // DT
+#define SENSOR_PIN1 3 // CLK
 #define DISPLAY_PIN_CLK     4
 #define DISPLAY_PIN_DIO     5
 #define FADE_TIMEOUT        60000
 
-#define BUTTON_DOWN     A1 // -> 14
-#define BUTTON_UP       A0 // -> 15
-#define BUTTON_P0       A2 // -> 16
-#define BUTTON_P1       A3 // -> 17
-// Not working (cable)
-#define BUTTON_P2       A4 // -> 18
-#define BUTTON_RST      A5 // -> 19
+// TMXXX buttons
+#define BUTTON_DOWN     9 //A1 // -> 14
+#define BUTTON_UP       14//A0 // -> 15
+#define BUTTON_P0       10//A2 // -> 16
+#define BUTTON_P1       11//A3 // -> 17
+#define BUTTON_P2       12//A4 // -> 18
+#define BUTTON_RST      13//A5 // -> 19
 
 /**
  * __WATCHDOG__         if watchdog is enabled
@@ -42,7 +43,7 @@
     #define WATCHDOG_TOLERANCE      3
 #endif
 
-#define STOP_POS_DIFF       1   // Offset distance for preset end stop
+#define STOP_POS_DIFF       5   // Offset distance for preset end stop
 #define MINIMUM_POS_CHANGE  8   // Minimum distance for presets to be invoked
 
 #define R_EN    7
@@ -55,4 +56,6 @@
 #define POWER_RELAY         7
 // When the rotary sensor is not in the case but directly on the shaft, the counting direction is reversed
 // this configure the behavior
-#define ENCODER_INLINE      true    
+#define ENCODER_INLINE     false
+// adjust for encoder ratio
+#define ENCODER_TURN_COUNT 60 

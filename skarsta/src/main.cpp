@@ -31,12 +31,12 @@ void eeprom_reset() {
 
 #ifdef __H_BRIDGE_MOTOR__
 MotorBridge motor(SENSOR_PIN0, SENSOR_PIN1, R_EN, L_EN, R_PWM, L_PWM, STOP_POS_DIFF, MINIMUM_POS_CHANGE,
-                  REVERSE_POLARITY, ENCODER_INLINE);
+                  REVERSE_POLARITY, ENCODER_INLINE, ENCODER_TURN_COUNT);
 #else
 MotorRelay motor(SENSOR_PIN0, SENSOR_PIN1, POWER_RELAY, DIRECTION_RELAY, STOP_POS_DIFF, MINIMUM_POS_CHANGE,
-                 REVERSE_POLARITY, ENCODER_INLINE);
+                 REVERSE_POLARITY, ENCODER_INLINE, ENCODER_TURN_COUNT);
 #endif
-NoDisplay display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
+Display display(DISPLAY_PIN_CLK, DISPLAY_PIN_DIO, FADE_TIMEOUT);
 Watchdog watchdog(&motor, WATCHDOG_TIMEOUT, WATCHDOG_DEADLOCK_CHANGE, WATCHDOG_OTHER_CHANGE, WATCHDOG_OTHER_SLEEP);
 Calibrator calibrator(&motor);
 Keypad keypad(&motor, &display, &calibrator, BUTTON_DOWN, BUTTON_UP, BUTTON_RST, BUTTON_P0, BUTTON_P1, BUTTON_P2);
@@ -72,6 +72,8 @@ void setup() {
 }
 
 void loop() {
+   
+    
     for (const auto &service: services)
         service->cycle();
 }

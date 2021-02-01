@@ -49,10 +49,15 @@ void MotorBridge::setSpeed(MotorState state, uint8_t speed) {
 }
 
 void MotorBridge::cycle() {
-    if (elapsed >= SPEED_STEP_DURATION && speed < MAX_SPEED && speed >= MIN_SPEED) {
-        setSpeed(get_state(), speed + 5 % (MAX_SPEED + 1));
-        elapsed = 0;
-    }
-    
+    if (accel_elapsed >= SPEED_STEP_DURATION && speed <= MAX_SPEED && speed >= MIN_SPEED) {
+        // decelerate at 3 crank turn
+        uint8_t new_speed =  min(speed + 5 % (MAX_SPEED + 1), MAX_SPEED);
+        if (speed_slow) {
+            new_speed =  max((speed - 10 % (MAX_SPEED + 1)), MIN_SPEED);
+            LOG("m | slow");                        
+        }
+        setSpeed(get_state(), new_speed);
+        accel_elapsed = 0;
+    }    
     Motor::cycle();
 }

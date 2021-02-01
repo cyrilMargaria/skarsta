@@ -3,7 +3,7 @@
 // updated and changed by Oscar January 2018 (https://www.thingiverse.com/0scar/about)
 
 // Based on pulleys by:
-// http://www.thingiverse.com/thing:11256 by me!
+// http://www.thingiverse.com/thing:11256 by droftarts!
 // https://github.com/prusajr/PrusaMendel by Josef Prusa
 // http://www.thingiverse.com/thing:3104 by GilesBathgate
 // http://www.thingiverse.com/thing:2079 by nophead
@@ -21,14 +21,14 @@
 // ------------------------
 // Idler profile parameters
 // ------------------------
-number_of_teeth = 40; // [10:100]
+number_of_teeth = 35; // [10:100]
 profile = 12; // [1:MXL, 2:40DP, 3:XL, 4:H, 5:T2.5, 6:T5, 7:T10, 8:AT5, 9:HTD_3mm, 10:HTD_5mm, 11:HTD_8mm, 12:GT2_2mm, 13:GT2_3mm, 14:GT2_5mm]
 motor_shaft_diameter = 6; // (in mm)
 motor_shaft_flat = 0.5; // shaft flat
 motor_shaft_flat_h = 12; // shaft flat len
 motor_shaft_h = 15; // shaft len into the piece
-toothed_part_length = 10.2; // [3:30] (in mm)
-base_height = 8; // [0:30] (in mm)
+toothed_part_length = 11; // [3:30] (in mm)
+base_height = 6; // [0:30] (in mm)
 base_diameter = 22;   // [10:50] (in mm)
 
 // ---------------------------
