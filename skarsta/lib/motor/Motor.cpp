@@ -20,13 +20,11 @@ Motor::Motor(uint8_t _pin1, uint8_t _pin2, uint8_t stop_diff, uint8_t min_change
 bool Motor::begin() {
     LOG("m | begin()");
 
-#ifdef __EEPROM__
-    if (false) {
-        EEPROM.get(ADDRESS_POSITION, position);    
-        EEPROM.get(ADDRESS_END_STOP_0, end_stop[0]);
-        EEPROM.get(ADDRESS_END_STOP_1, end_stop[1]);
-        EEPROM.get(ADDRESS_MODE, mode);
-    }
+#ifdef __EEPROM__    
+    EEPROM.get(ADDRESS_POSITION, position);    
+    EEPROM.get(ADDRESS_END_STOP_0, end_stop[0]);
+    EEPROM.get(ADDRESS_END_STOP_1, end_stop[1]);
+    EEPROM.get(ADDRESS_MODE, mode);        
 #endif
  
     LOG("m | pos:%d end_pos:%d-%d mode:%d", position, end_stop[0], end_stop[1], mode);
@@ -176,7 +174,7 @@ void Motor::cycle() {
         uint32_t cur_position = encoder_inline ? -measurement_raw : measurement_raw;
         uint32_t position_diff = position_abs(position, cur_position);
         
-        //LOG("m | s:%d r:%ld p:%ld np:%ld d:%ld %ld um", state, measurement_raw, position, cur_position, position_diff, position*75);
+        LOG("m | s:%d r:%ld p:%ld np:%ld d:%ld %ld um", state, measurement_raw, position, cur_position, position_diff, position*75);
 
         if ((state == OFF && position_diff > (encoder_turn_count/2)) ||
             (state != OFF && position_diff > 5)) {
@@ -196,9 +194,9 @@ void Motor::cycle() {
     updateEEPROM(ADDRESS_POSITION, position);
 #endif
     // slow zone 
-    if ( check_end_stops(end_stop[0]+encoder_turn_count*3, end_stop[1]-encoder_turn_count*3) ||
-         (next_position >= 0 && check_end_stops((unsigned int) (next_position+encoder_turn_count),
-                                               (unsigned int) (next_position-encoder_turn_count)))
+    if ( check_end_stops(end_stop[0]+encoder_turn_count*4, end_stop[1]-encoder_turn_count*4) ||
+         (next_position >= 0 && check_end_stops((unsigned int) (next_position+6*encoder_turn_count),
+                                               (unsigned int) (next_position-6*encoder_turn_count)))
          ) {
         speed_slow = true;
     } else {

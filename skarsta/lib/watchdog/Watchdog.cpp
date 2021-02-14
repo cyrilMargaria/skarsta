@@ -40,8 +40,16 @@ void Watchdog::cycle() {
         if (state != OFF && pos_diff) {
             lastRotation = 0;
         }
-
-        if (pos_diff <= deadlock_change && state != OFF) {
+      
+        if (CW == state) {
+            // Adjusted for heavy desk, be less trippy when going up
+            if (pos_diff <= (3*deadlock_change)/2) {
+                LOG("w | cw d:%d s:%d", pos_diff, state);
+                for (auto trigger: triggers)
+                    if (trigger->trip(STOPPED))
+                        break;
+            }
+        } else if (pos_diff <= deadlock_change && state != OFF) {
             LOG("w | d:%d s:%d", pos_diff, state);
             for (auto trigger: triggers)
                 if (trigger->trip(STOPPED))

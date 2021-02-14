@@ -44,7 +44,7 @@ idler_base_diameter = 22; // in mm
 // ---------------
 // Shaft fastening
 // ---------------
-screws_disposition = 0; // [0:None, 1:1 screw, 2:2 screws at 90deg, 3:3 screws at 120deg, 4:4 screws at 90deg]
+screws_disposition = 2; // [0:None, 1:1 screw, 2:2 screws at 90deg, 3:3 screws at 120deg, 4:4 screws at 90deg]
 nut_shape = 1; // [1:Hexagonal, 0:Square]
 screw_profile = 4; // [0:M1, 1:M1.6, 2:M2, 3:M2.5, 4:M3, 5:M4, 6:M5, 7:M6]
 // Distance between inner face of nut and shaft - can be negative - (in mm).

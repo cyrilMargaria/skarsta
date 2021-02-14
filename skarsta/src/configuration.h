@@ -30,9 +30,9 @@
 #ifdef __USENSOR__
     #define WATCHDOG_TIMEOUT        300
 #else
-    #define WATCHDOG_TIMEOUT        100
+    #define WATCHDOG_TIMEOUT        200
 #endif
-#define WATCHDOG_DEADLOCK_CHANGE    12
+#define WATCHDOG_DEADLOCK_CHANGE    8
 #define WATCHDOG_OTHER_CHANGE       6
 #ifndef WATCHDOG_OTHER_SLEEP
     #define WATCHDOG_OTHER_SLEEP    0

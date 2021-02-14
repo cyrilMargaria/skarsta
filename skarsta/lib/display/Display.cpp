@@ -135,7 +135,7 @@ void Display::cycle() {
         dirty = false;
         elapsed = 0;
         LOG("d | redraw");
-    } else if (blink && false) {
+    } else if (blink) {
         if (elapsed >= 100) {
             if (!clear) {
                 display.clear();

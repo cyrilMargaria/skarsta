@@ -28,20 +28,20 @@ motor_shaft_diameter = 6; // (in mm)
 motor_shaft_flat = 1.5; // shaft flat
 motor_shaft_flat_h = 20; // shaft flat len
 motor_shaft_h = 20; // shaft len into the piece
-toothed_part_length = 11; // [3:30] (in mm)
+toothed_part_length = 12; // [3:30] (in mm)
 base_height = 2; // [0:30] (in mm)
-base_diameter = 20;   // [10:50] (in mm)
+base_diameter = 16;   // [10:50] (in mm)
 
 // ---------------------------
 // Idler & retainer parameters
 // ---------------------------
 belt_retainer = 1; // [0:No, 1:Yes]
 retainer_height_p = 1; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
-total_height = 0; // total height, 
+total_height = base_height+retainer_height_p+toothed_part_length+3; // total height, 
 belt_idler = 1; // [0:No, 1:Yes]
 // Height of idler flange over pulley. Set to same as base height if you want an idler but no pulley.
 idler_height_p = 1.5; // [0.5:Tiny (0.5mm), 1:Small (1mm), 1.5:Normal (1.5mm), 2:Big (2mm), 3:Bigger (3mm), 4:Hudge (5mm)]
-idler_base_diameter = 20; // in mm
+idler_base_diameter = 16; // in mm
 // ---------------
 // Shaft fastening
 // ---------------

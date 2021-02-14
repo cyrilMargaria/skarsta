@@ -9,8 +9,8 @@
 #endif
 
 typedef enum {
-    CCW,
-    CW,
+    CCW, //< Desk should go down
+    CW, //< Desk should go up
     OFF
 } MotorState;
 
